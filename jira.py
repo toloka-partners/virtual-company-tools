@@ -62,7 +62,7 @@ async def jira_get_board_issues(
     # вот здесь важно await
     resp = await integration.call_api(endpoint, method='GET', params=params)
     data = resp.json()  # если resp.json() синхронный
-
+    subtask_map = {}
     issues_normalized: List[Dict[str, Any]] = []
     for issue in data.get('issues', []):
         f = issue['fields']
@@ -89,6 +89,12 @@ async def jira_get_board_issues(
             'epic_link': f.get('customfield_10008'),
             'comments': comments,
         })
+        for subtask in f.get('subtasks', []):
+            subtask_map[subtask.get('key')] = issue.get('key')
+
+    for task in issues_normalized:
+        if task.get('type') == 'Subtask' and subtask_map.get(task['key']):
+            task['epic_link'] = 'https://toloka-partners.atlassian.net/browse/' + subtask_map[task['key']]
 
     return issues_normalized
 
