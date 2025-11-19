@@ -42,5 +42,5 @@ https://docs.google.com/document/d/1CFDWxoqEn6JClmwhysOuJJoG4rbK3Ai8ByQia0FCAkY/
 
 - to run the jira bot
 ```bash
-python jira_bot.py
+python jira.py
 ```
